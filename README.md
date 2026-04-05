@@ -1,5 +1,5 @@
 # windowMotor
-A microcontroller that manages 2 DC motors
+Motorized Windows: with position and torque monitor
 
 ```yaml
 # example configuration:

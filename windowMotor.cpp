@@ -17,6 +17,7 @@ void WindowMotor::setup() {
         (this->boardid1_pin_ == nullptr) || 
         (this->boardid2_pin_ == nullptr)) {
         this->mark_failed();
+        this->faults |= WINMOTFAULT_BOARDID_PIN_NULL;
         return;
     }
     this->boardid0_pin_->setup();

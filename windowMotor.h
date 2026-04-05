@@ -3,6 +3,12 @@
 #include "esphome/core/component.h"
 #include "esphome/core/gpio.h"
 
+// window motor controller faults
+#define WINMOTFAULT_BOARDID_PIN_NULL 0x0
+
+// window motor faults (for each motor)
+#define WINMOTFAULT_MOT_TBD 0x0
+
 // Namespace definition
 namespace esphome::window_motor {
 
@@ -30,6 +36,9 @@ class WindowMotor : public PollingComponent {
     InternalGPIOPin *boardid2_pin_{nullptr};
 
     uint8_t boardId{0};
+    uint32_t faults{0};
+    // per Motor
+    uint32_t faultsMotor{0};
 };
 
 }  // namespace esphome::window_motor
