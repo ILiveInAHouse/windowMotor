@@ -1,0 +1,36 @@
+import esphome.config_validation as cv
+from esphome import pins
+import esphome.codegen as cg
+from esphome.const import (
+    CONF_ID,
+)
+
+CODEOWNERS = ["@ILiveInAHouse"]
+DEPENDENCIES = [ ]
+AUTO_LOAD = [ ]
+MULTI_CONF = True
+
+# Define constants for configuration keys
+CONF_BOARDID0_PIN = "boardid0_pin"
+
+# C++ namespace
+ns = cg.esphome_ns.namespace("window_motor")
+# Create class and inherit from
+WindowMotor = ns.class_("WindowMotor", cg.Component)
+
+CONFIG_SCHEMA = cv.COMPONENT_SCHEMA.extend({
+    cv.GenerateID(): cv.declare_id(WindowMotor),
+    # Schema definition, containing the options available for the component
+    cv.Required(CONF_BOARDID0_PIN): pins.gpio_input_pin_schema,
+    # Optional example
+    # cv.Optional(CONF_BAZ): cv.int_range(0, 255),
+})
+
+async def to_code(config):
+    # Declare new component
+    var = cg.new_Pvariable(config[CONF_ID])
+    await cg.register_component(var, config)
+    
+    pin = await cg.gpio_pin_expression(config[CONF_BOARDID0_PIN])
+    cg.add(var.set_boardid0_pin(pin))
+    # Configure the component

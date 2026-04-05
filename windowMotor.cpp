@@ -1,0 +1,72 @@
+#include "esphome/core/log.h"
+#include "windowMotor.h"
+
+namespace esphome::window_motor {
+
+static const char *TAG = "window_motor.component";
+
+WindowMotor::WindowMotor() {
+    // Constructor
+    // Initialize class fields and configurations
+    ESP_LOGI(TAG, "WindowMotor Constructor");
+    this->boardId = 7;
+}
+
+void WindowMotor::setup() {
+    // Initialize hardware
+    ESP_LOGI(TAG, "WindowMotor setup");
+    if (this->boardid0_pin_ == nullptr) {
+        this->mark_failed();
+        return;
+    }
+    this->boardid0_pin_->setup();
+    this->boardid0_pin_->pin_mode(gpio::FLAG_INPUT);
+    ESP_LOGI(TAG, "  pin read %d", this->boardid0_pin_->digital_read());
+}
+
+//void ExampleComponent::loop() {
+  // Tasks here will be performed at every call of the main application loop.
+  // Note: code here MUST NOT BLOCK (see below)
+  // Called every 7ms
+  // Component Loop Control:
+  // https://developers.esphome.io/architecture/components/advanced/#component-loop-control
+//}
+
+// Called once after booting and then each time a new client connects
+//   to monitor logs
+void WindowMotor::dump_config() {
+    ESP_LOGCONFIG(TAG, "WindowMotor:");
+    LOG_PIN("  boardId0_pin: ", this->boardid0_pin_);
+    ESP_LOGCONFIG(TAG, "  boardId: %d", this->boardId);
+}
+
+// float ExampleComponent::get_setup_priority() const {
+//   // Return the setup priority of this component
+//   // Higher values mean this component will be set up later
+//   return setup_priority::DATA;
+// }
+
+// void ExampleComponent::on_safe_shutdown() {
+//   // Optional: Critical cleanup operations for safe shutdowns only
+//   // This is called first, before any other shutdown procedures
+//   ESP_LOGI(TAG, "Safe shutdown initiated");
+// }
+
+// void ExampleComponent::on_shutdown() {
+//   // Optional: Start shutdown process
+//   // For example, send a disconnect message but don't close connections yet
+//   ESP_LOGI(TAG, "Starting shutdown");
+// }
+
+// bool ExampleComponent::teardown() {
+//   // Optional: Finish any pending operations
+//   // Return false if more time is needed, true when done
+//   // This will be called multiple times until it returns true or timeout is reached
+
+//   // Note: Log messages here will likely only go to serial console
+//   // as network connections are being closed. Avoid excessive logging
+//   // to prevent slowing down the shutdown process.
+//   return true;
+// }
+
+}  // namespace esphome::window_motor
