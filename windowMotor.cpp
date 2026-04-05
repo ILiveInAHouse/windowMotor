@@ -8,20 +8,26 @@ static const char *TAG = "window_motor.component";
 WindowMotor::WindowMotor() {
     // Constructor
     // Initialize class fields and configurations
-    ESP_LOGI(TAG, "WindowMotor Constructor");
-    this->boardId = 7;
 }
 
 void WindowMotor::setup() {
     // Initialize hardware
-    ESP_LOGI(TAG, "WindowMotor setup");
-    if (this->boardid0_pin_ == nullptr) {
+    this->boardId = 0xFF;
+    if ((this->boardid0_pin_ == nullptr) || 
+        (this->boardid1_pin_ == nullptr) || 
+        (this->boardid2_pin_ == nullptr)) {
         this->mark_failed();
         return;
     }
     this->boardid0_pin_->setup();
-    this->boardid0_pin_->pin_mode(gpio::FLAG_INPUT);
-    ESP_LOGI(TAG, "  pin read %d", this->boardid0_pin_->digital_read());
+    this->boardid0_pin_->pin_mode(gpio::FLAG_INPUT | gpio::FLAG_PULLDOWN);
+    this->boardid1_pin_->setup();
+    this->boardid1_pin_->pin_mode(gpio::FLAG_INPUT | gpio::FLAG_PULLDOWN);
+    this->boardid2_pin_->setup();
+    this->boardid2_pin_->pin_mode(gpio::FLAG_INPUT | gpio::FLAG_PULLDOWN);
+    this->boardId = (this->boardid2_pin_->digital_read() << 2) |
+                    (this->boardid1_pin_->digital_read() << 1) |
+                    (this->boardid0_pin_->digital_read() << 0);
 }
 
 //void ExampleComponent::loop() {
@@ -31,6 +37,15 @@ void WindowMotor::setup() {
   // Component Loop Control:
   // https://developers.esphome.io/architecture/components/advanced/#component-loop-control
 //}
+
+void WindowMotor::update() {
+    this->boardId = (this->boardid2_pin_->digital_read() << 2) |
+                    (this->boardid1_pin_->digital_read() << 1) |
+                    (this->boardid0_pin_->digital_read() << 0);
+    ESP_LOGI(TAG, " boardid: %d", this->boardId);
+}
+
+uint8_t WindowMotor::getBoardId() const { return this->boardId; }
 
 // Called once after booting and then each time a new client connects
 //   to monitor logs

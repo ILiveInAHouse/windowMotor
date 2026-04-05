@@ -12,19 +12,25 @@ MULTI_CONF = True
 
 # Define constants for configuration keys
 CONF_BOARDID0_PIN = "boardid0_pin"
+CONF_BOARDID1_PIN = "boardid1_pin"
+CONF_BOARDID2_PIN = "boardid2_pin"
 
 # C++ namespace
 ns = cg.esphome_ns.namespace("window_motor")
 # Create class and inherit from
-WindowMotor = ns.class_("WindowMotor", cg.Component)
+WindowMotor = ns.class_("WindowMotor", cg.PollingComponent)
 
-CONFIG_SCHEMA = cv.COMPONENT_SCHEMA.extend({
-    cv.GenerateID(): cv.declare_id(WindowMotor),
-    # Schema definition, containing the options available for the component
-    cv.Required(CONF_BOARDID0_PIN): pins.gpio_input_pin_schema,
-    # Optional example
-    # cv.Optional(CONF_BAZ): cv.int_range(0, 255),
-})
+CONFIG_SCHEMA = cv.COMPONENT_SCHEMA.extend(
+    {
+        cv.GenerateID(): cv.declare_id(WindowMotor),
+        # Schema definition, containing the options available for the component
+        cv.Required(CONF_BOARDID0_PIN): pins.gpio_input_pin_schema,
+        cv.Required(CONF_BOARDID1_PIN): pins.gpio_input_pin_schema,
+        cv.Required(CONF_BOARDID2_PIN): pins.gpio_input_pin_schema,
+        # Optional example
+        # cv.Optional(CONF_BAZ): cv.int_range(0, 255),
+    }
+).extend(cv.polling_component_schema("5s"))
 
 async def to_code(config):
     # Declare new component
@@ -33,4 +39,8 @@ async def to_code(config):
     
     pin = await cg.gpio_pin_expression(config[CONF_BOARDID0_PIN])
     cg.add(var.set_boardid0_pin(pin))
+    pin = await cg.gpio_pin_expression(config[CONF_BOARDID1_PIN])
+    cg.add(var.set_boardid1_pin(pin))
+    pin = await cg.gpio_pin_expression(config[CONF_BOARDID2_PIN])
+    cg.add(var.set_boardid2_pin(pin))
     # Configure the component
